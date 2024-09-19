@@ -3,6 +3,8 @@ import pandas as pd
 import psycopg2
 from datetime import datetime
 import io  # メモリ内でファイルを扱うため
+import os
+from dotenv import load_dotenv
 
 # Excelファイルからデータを読み込み
 file_path = 'プルダウンマスター.xlsx'
@@ -18,14 +20,19 @@ prefectures = sorted(data['都道府県'].unique().tolist())
 main_industries = sorted(data['産業分類主業名'].unique().tolist())
 sub_industries = sorted(data['産業分類従業名'].unique().tolist())
 
+
+# .envファイルをロード
+load_dotenv()
+
 # データベース接続を初期化時に開く
 conn = psycopg2.connect(
-    host="aws-0-ap-northeast-1.pooler.supabase.com",
-    database="postgres",
-    user="postgres.lrlyxdghsuxmehaueepi",
-    password="db_list_88_filfilfil",
-    port="6543"
+    host=os.getenv('DB_HOST'),
+    database=os.getenv('DB_NAME'),
+    user=os.getenv('DB_USER'),
+    password=os.getenv('DB_PASSWORD'),
+    port=os.getenv('DB_PORT')
 )
+
 cursor = conn.cursor()
 
 # タイトルを設定
